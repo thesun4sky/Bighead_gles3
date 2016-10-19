@@ -1,7 +1,7 @@
 package com.example.teasunkim.bighead_gles3;
 
 import android.content.Context;
-import android.opengl.GLES20;
+import android.opengl.GLES30;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
 import android.os.SystemClock;
@@ -21,10 +21,10 @@ import javax.microedition.khronos.opengles.GL10;
  * This class implements our custom renderer. Note that the GL10 parameter passed in is unused for OpenGL ES 2.0
  * renderers -- the static class GLES20 is used instead.
  */
-public class OpenGLES20Renderer implements GLSurfaceView.Renderer
+public class OpenGLES30Renderer implements GLSurfaceView.Renderer
 {
 	/** Used for debug logs. */
-	private static final String TAG = "OpenGLES20Renderer";
+	private static final String TAG = "OpenGLES30Renderer";
 
 	private final Context mActivityContext;
 
@@ -118,7 +118,7 @@ public class OpenGLES20Renderer implements GLSurfaceView.Renderer
 	/**
 	 * Initialize the model data.
 	 */
-	public OpenGLES20Renderer(final Context activityContext)
+	public OpenGLES30Renderer(final Context activityContext)
 	{	
 		mActivityContext = activityContext;
 		
@@ -376,13 +376,13 @@ public class OpenGLES20Renderer implements GLSurfaceView.Renderer
 	public void onSurfaceCreated(GL10 glUnused, EGLConfig config)
 	{
 		// Set the background clear color to black.
-		GLES20.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+		GLES30.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 		
 		// Use culling to remove back faces.
-		GLES20.glEnable(GLES20.GL_CULL_FACE);
+		GLES30.glEnable(GLES30.GL_CULL_FACE);
 		
 		// Enable depth testing
-		GLES20.glEnable(GLES20.GL_DEPTH_TEST);
+		GLES30.glEnable(GLES30.GL_DEPTH_TEST);
 		
 		// The below glEnable() call is a holdover from OpenGL ES 1, and is not needed in OpenGL ES 2.
 		// Enable texture mapping
@@ -411,8 +411,8 @@ public class OpenGLES20Renderer implements GLSurfaceView.Renderer
 		final String vertexShader = getVertexShader();
  		final String fragmentShader = getFragmentShader();
 		
-		final int vertexShaderHandle = ShaderHelper.compileShader(GLES20.GL_VERTEX_SHADER, vertexShader);
-		final int fragmentShaderHandle = ShaderHelper.compileShader(GLES20.GL_FRAGMENT_SHADER, fragmentShader);
+		final int vertexShaderHandle = ShaderHelper.compileShader(GLES30.GL_VERTEX_SHADER, vertexShader);
+		final int fragmentShaderHandle = ShaderHelper.compileShader(GLES30.GL_FRAGMENT_SHADER, fragmentShader);
 		
 		mProgramHandle = ShaderHelper.createAndLinkProgram(vertexShaderHandle, fragmentShaderHandle, 
 				new String[] {"a_Position",  "a_Color", "a_Normal", "a_TexCoordinate"});
@@ -421,8 +421,8 @@ public class OpenGLES20Renderer implements GLSurfaceView.Renderer
         final String pointVertexShader = RawResourceReader.readTextFileFromRawResource(mActivityContext, R.raw.point_vertex_shader);
         final String pointFragmentShader = RawResourceReader.readTextFileFromRawResource(mActivityContext, R.raw.point_fragment_shader);
         
-        final int pointVertexShaderHandle = ShaderHelper.compileShader(GLES20.GL_VERTEX_SHADER, pointVertexShader);
-        final int pointFragmentShaderHandle = ShaderHelper.compileShader(GLES20.GL_FRAGMENT_SHADER, pointFragmentShader);
+        final int pointVertexShaderHandle = ShaderHelper.compileShader(GLES30.GL_VERTEX_SHADER, pointVertexShader);
+        final int pointFragmentShaderHandle = ShaderHelper.compileShader(GLES30.GL_FRAGMENT_SHADER, pointFragmentShader);
         mPointProgramHandle = ShaderHelper.createAndLinkProgram(pointVertexShaderHandle, pointFragmentShaderHandle, 
         		new String[] {"a_Position"});
         
@@ -434,7 +434,7 @@ public class OpenGLES20Renderer implements GLSurfaceView.Renderer
 	public void onSurfaceChanged(GL10 glUnused, int width, int height)
 	{
 		// Set the OpenGL viewport to the same size as the surface.
-		GLES20.glViewport(0, 0, width, height);
+		GLES30.glViewport(0, 0, width, height);
 
 		// Create a new perspective projection matrix. The height will stay the same
 		// while the width will vary as per aspect ratio.
@@ -452,33 +452,33 @@ public class OpenGLES20Renderer implements GLSurfaceView.Renderer
 	@Override
 	public void onDrawFrame(GL10 glUnused)
 	{
-		GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
+		GLES30.glClear(GLES30.GL_COLOR_BUFFER_BIT | GLES30.GL_DEPTH_BUFFER_BIT);
                 
         // Do a complete rotation every 10 seconds.
         long time = SystemClock.uptimeMillis() % 10000L;
         float angleInDegrees = (360.0f / 10000.0f) * ((int) time);                
         
         // Set our per-vertex lighting program.
-        GLES20.glUseProgram(mProgramHandle);
+        GLES30.glUseProgram(mProgramHandle);
         
         // Set program handles for cube drawing.
-        mMVPMatrixHandle = GLES20.glGetUniformLocation(mProgramHandle, "u_MVPMatrix");
-        mMVMatrixHandle = GLES20.glGetUniformLocation(mProgramHandle, "u_MVMatrix");
-        mLightPosHandle = GLES20.glGetUniformLocation(mProgramHandle, "u_LightPos");
-        mTextureUniformHandle = GLES20.glGetUniformLocation(mProgramHandle, "u_Texture");
-        mPositionHandle = GLES20.glGetAttribLocation(mProgramHandle, "a_Position");
-        mColorHandle = GLES20.glGetAttribLocation(mProgramHandle, "a_Color");
-        mNormalHandle = GLES20.glGetAttribLocation(mProgramHandle, "a_Normal");
-        mTextureCoordinateHandle = GLES20.glGetAttribLocation(mProgramHandle, "a_TexCoordinate");
+        mMVPMatrixHandle = GLES30.glGetUniformLocation(mProgramHandle, "u_MVPMatrix");
+        mMVMatrixHandle = GLES30.glGetUniformLocation(mProgramHandle, "u_MVMatrix");
+        mLightPosHandle = GLES30.glGetUniformLocation(mProgramHandle, "u_LightPos");
+        mTextureUniformHandle = GLES30.glGetUniformLocation(mProgramHandle, "u_Texture");
+        mPositionHandle = GLES30.glGetAttribLocation(mProgramHandle, "a_Position");
+        mColorHandle = GLES30.glGetAttribLocation(mProgramHandle, "a_Color");
+        mNormalHandle = GLES30.glGetAttribLocation(mProgramHandle, "a_Normal");
+        mTextureCoordinateHandle = GLES30.glGetAttribLocation(mProgramHandle, "a_TexCoordinate");
         
         // Set the active texture unit to texture unit 0.
-        GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
+        GLES30.glActiveTexture(GLES30.GL_TEXTURE0);
         
         // Bind the texture to this unit.
-        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, mTextureDataHandle);
+        GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, mTextureDataHandle);
         
         // Tell the texture uniform sampler to use this texture in the shader by binding to texture unit 0.
-        GLES20.glUniform1i(mTextureUniformHandle, 0);
+        GLES30.glUniform1i(mTextureUniformHandle, 0);
         
         // Calculate position of the light. Rotate and then push into the distance.
         Matrix.setIdentityM(mLightModelMatrix, 0);
@@ -515,7 +515,7 @@ public class OpenGLES20Renderer implements GLSurfaceView.Renderer
         drawCube();      
         
         // Draw a point to indicate the light.
-        GLES20.glUseProgram(mPointProgramHandle);
+        GLES30.glUseProgram(mPointProgramHandle);
         drawLight();
 	}				
 	
@@ -526,51 +526,51 @@ public class OpenGLES20Renderer implements GLSurfaceView.Renderer
 	{		
 		// Pass in the position information
 		mCubePositions.position(0);		
-        GLES20.glVertexAttribPointer(mPositionHandle, mPositionDataSize, GLES20.GL_FLOAT, false,
+        GLES30.glVertexAttribPointer(mPositionHandle, mPositionDataSize, GLES30.GL_FLOAT, false,
         		0, mCubePositions);        
                 
-        GLES20.glEnableVertexAttribArray(mPositionHandle);
+        GLES30.glEnableVertexAttribArray(mPositionHandle);
         
         // Pass in the color information
         mCubeColors.position(0);
-        GLES20.glVertexAttribPointer(mColorHandle, mColorDataSize, GLES20.GL_FLOAT, false,
+        GLES30.glVertexAttribPointer(mColorHandle, mColorDataSize, GLES30.GL_FLOAT, false,
         		0, mCubeColors);        
         
-        GLES20.glEnableVertexAttribArray(mColorHandle);
+        GLES30.glEnableVertexAttribArray(mColorHandle);
         
         // Pass in the normal information
         mCubeNormals.position(0);
-        GLES20.glVertexAttribPointer(mNormalHandle, mNormalDataSize, GLES20.GL_FLOAT, false,
+        GLES30.glVertexAttribPointer(mNormalHandle, mNormalDataSize, GLES30.GL_FLOAT, false,
         		0, mCubeNormals);
         
-        GLES20.glEnableVertexAttribArray(mNormalHandle);
+        GLES30.glEnableVertexAttribArray(mNormalHandle);
         
         // Pass in the texture coordinate information
         mCubeTextureCoordinates.position(0);
-        GLES20.glVertexAttribPointer(mTextureCoordinateHandle, mTextureCoordinateDataSize, GLES20.GL_FLOAT, false,
+        GLES30.glVertexAttribPointer(mTextureCoordinateHandle, mTextureCoordinateDataSize, GLES30.GL_FLOAT, false,
         		0, mCubeTextureCoordinates);
         
-        GLES20.glEnableVertexAttribArray(mTextureCoordinateHandle);
+        GLES30.glEnableVertexAttribArray(mTextureCoordinateHandle);
         
 		// This multiplies the view matrix by the model matrix, and stores the result in the MVP matrix
         // (which currently contains model * view).
         Matrix.multiplyMM(mMVPMatrix, 0, mViewMatrix, 0, mModelMatrix, 0);
         
         // Pass in the modelview matrix.
-        GLES20.glUniformMatrix4fv(mMVMatrixHandle, 1, false, mMVPMatrix, 0);
+		GLES30.glUniformMatrix4fv(mMVMatrixHandle, 1, false, mMVPMatrix, 0);
         
         // This multiplies the modelview matrix by the projection matrix, and stores the result in the MVP matrix
         // (which now contains model * view * projection).
         Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mMVPMatrix, 0);
 
         // Pass in the combined matrix.
-        GLES20.glUniformMatrix4fv(mMVPMatrixHandle, 1, false, mMVPMatrix, 0);
+		GLES30.glUniformMatrix4fv(mMVPMatrixHandle, 1, false, mMVPMatrix, 0);
         
         // Pass in the light position in eye space.        
-        GLES20.glUniform3f(mLightPosHandle, mLightPosInEyeSpace[0], mLightPosInEyeSpace[1], mLightPosInEyeSpace[2]);
+		GLES30.glUniform3f(mLightPosHandle, mLightPosInEyeSpace[0], mLightPosInEyeSpace[1], mLightPosInEyeSpace[2]);
         
         // Draw the cube.
-        GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, 36);
+		GLES30.glDrawArrays(GLES30.GL_TRIANGLES, 0, 36);
 	}	
 	
 	/**
@@ -578,21 +578,21 @@ public class OpenGLES20Renderer implements GLSurfaceView.Renderer
 	 */
 	private void drawLight()
 	{
-		final int pointMVPMatrixHandle = GLES20.glGetUniformLocation(mPointProgramHandle, "u_MVPMatrix");
-        final int pointPositionHandle = GLES20.glGetAttribLocation(mPointProgramHandle, "a_Position");
+		final int pointMVPMatrixHandle = GLES30.glGetUniformLocation(mPointProgramHandle, "u_MVPMatrix");
+        final int pointPositionHandle = GLES30.glGetAttribLocation(mPointProgramHandle, "a_Position");
         
 		// Pass in the position.
-		GLES20.glVertexAttrib3f(pointPositionHandle, mLightPosInModelSpace[0], mLightPosInModelSpace[1], mLightPosInModelSpace[2]);
+		GLES30.glVertexAttrib3f(pointPositionHandle, mLightPosInModelSpace[0], mLightPosInModelSpace[1], mLightPosInModelSpace[2]);
 
 		// Since we are not using a buffer object, disable vertex arrays for this attribute.
-        GLES20.glDisableVertexAttribArray(pointPositionHandle);
+		GLES30.glDisableVertexAttribArray(pointPositionHandle);
 		
 		// Pass in the transformation matrix.
 		Matrix.multiplyMM(mMVPMatrix, 0, mViewMatrix, 0, mLightModelMatrix, 0);
 		Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mMVPMatrix, 0);
-		GLES20.glUniformMatrix4fv(pointMVPMatrixHandle, 1, false, mMVPMatrix, 0);
+		GLES30.glUniformMatrix4fv(pointMVPMatrixHandle, 1, false, mMVPMatrix, 0);
 		
 		// Draw the point.
-		GLES20.glDrawArrays(GLES20.GL_POINTS, 0, 1);
+		GLES30.glDrawArrays(GLES30.GL_POINTS, 0, 1);
 	}
 }

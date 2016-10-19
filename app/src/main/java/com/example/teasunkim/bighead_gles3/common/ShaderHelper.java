@@ -1,6 +1,6 @@
 package com.example.teasunkim.bighead_gles3.common;
 
-import android.opengl.GLES20;
+import android.opengl.GLES30;
 import android.util.Log;
 
 public class ShaderHelper
@@ -16,25 +16,25 @@ public class ShaderHelper
 	 */
 	public static int compileShader(final int shaderType, final String shaderSource)
 	{
-		int shaderHandle = GLES20.glCreateShader(shaderType);
+		int shaderHandle = GLES30.glCreateShader(shaderType);
 
 		if (shaderHandle != 0) 
 		{
 			// Pass in the shader source.
-			GLES20.glShaderSource(shaderHandle, shaderSource);
+			GLES30.glShaderSource(shaderHandle, shaderSource);
 
 			// Compile the shader.
-			GLES20.glCompileShader(shaderHandle);
+			GLES30.glCompileShader(shaderHandle);
 
 			// Get the compilation status.
 			final int[] compileStatus = new int[1];
-			GLES20.glGetShaderiv(shaderHandle, GLES20.GL_COMPILE_STATUS, compileStatus, 0);
+			GLES30.glGetShaderiv(shaderHandle, GLES30.GL_COMPILE_STATUS, compileStatus, 0);
 
 			// If the compilation failed, delete the shader.
 			if (compileStatus[0] == 0) 
 			{
-				Log.e(TAG, "Error compiling shader: " + GLES20.glGetShaderInfoLog(shaderHandle));
-				GLES20.glDeleteShader(shaderHandle);
+				Log.e(TAG, "Error compiling shader: " + GLES30.glGetShaderInfoLog(shaderHandle));
+				GLES30.glDeleteShader(shaderHandle);
 				shaderHandle = 0;
 			}
 		}
@@ -57,15 +57,15 @@ public class ShaderHelper
 	 */
 	public static int createAndLinkProgram(final int vertexShaderHandle, final int fragmentShaderHandle, final String[] attributes)
 	{
-		int programHandle = GLES20.glCreateProgram();
+		int programHandle = GLES30.glCreateProgram();
 		
 		if (programHandle != 0) 
 		{
 			// Bind the vertex shader to the program.
-			GLES20.glAttachShader(programHandle, vertexShaderHandle);
+			GLES30.glAttachShader(programHandle, vertexShaderHandle);
 
 			// Bind the fragment shader to the program.
-			GLES20.glAttachShader(programHandle, fragmentShaderHandle);
+			GLES30.glAttachShader(programHandle, fragmentShaderHandle);
 			
 			// Bind attributes
 			if (attributes != null)
@@ -73,22 +73,22 @@ public class ShaderHelper
 				final int size = attributes.length;
 				for (int i = 0; i < size; i++)
 				{
-					GLES20.glBindAttribLocation(programHandle, i, attributes[i]);
+					GLES30.glBindAttribLocation(programHandle, i, attributes[i]);
 				}						
 			}
 			
 			// Link the two shaders together into a program.
-			GLES20.glLinkProgram(programHandle);
+			GLES30.glLinkProgram(programHandle);
 
 			// Get the link status.
 			final int[] linkStatus = new int[1];
-			GLES20.glGetProgramiv(programHandle, GLES20.GL_LINK_STATUS, linkStatus, 0);
+			GLES30.glGetProgramiv(programHandle, GLES30.GL_LINK_STATUS, linkStatus, 0);
 
 			// If the link failed, delete the program.
 			if (linkStatus[0] == 0) 
 			{				
-				Log.e(TAG, "Error compiling program: " + GLES20.glGetProgramInfoLog(programHandle));
-				GLES20.glDeleteProgram(programHandle);
+				Log.e(TAG, "Error compiling program: " + GLES30.glGetProgramInfoLog(programHandle));
+				GLES30.glDeleteProgram(programHandle);
 				programHandle = 0;
 			}
 		}
