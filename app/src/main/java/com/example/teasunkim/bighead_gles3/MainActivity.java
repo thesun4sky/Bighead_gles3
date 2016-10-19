@@ -19,7 +19,7 @@ public class MainActivity extends Activity
 
         mGLSurfaceView = new GLSurfaceView(this);
 
-        // Check if the system supports OpenGL ES 2.0.
+        // Check if the system supports OpenGL ES 3.0.
         final ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
         final ConfigurationInfo configurationInfo = activityManager.getDeviceConfigurationInfo();
         final boolean supportsEs3 = configurationInfo.reqGlEsVersion >= 0x30000;
